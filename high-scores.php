@@ -5,6 +5,10 @@ include_once 'header.html';
 $topTenName = array();
 $topTenScore = array();
 $length = $_SESSION['ln'];
+$user = $_SESSION['username'];
+$miss = $_SESSION['attempts'];
+$word = $_SESSION['word'];
+$score = $_SESSION['score'];
 
 $sql = "SELECT * FROM highscore WHERE ln='$length' ORDER BY score desc";
 $results = $conn->query($sql);
@@ -37,10 +41,21 @@ if(isset($_POST['logout'])){
           <ol>
           <?php 
             for ($i=0; $i < 10; $i++) { 
-              echo "<li class='m-4'>$topTenName[$i] <span class='float-end'> $topTenScore[$i]</span></li>";
+              $player = ucfirst($topTenName[$i]);
+              echo "<li class='m-4'>$player <span class='float-end'> $topTenScore[$i]</span></li>";
             }?>
           </ol>
       </div>
+      <?php
+      $name = ucfirst($user);
+      echo<<<_end
+      <h5 class='text-center'>$name, you had <span class='text-danger'>
+      $miss</span> misses when trying to figure out the word <span class='text-success'>
+      $word</span>!<h5>
+      <h5 class='text-center'>Your score was <span class='text-success'>$score</span>!</h5>
+      _end
+      ?>
+     
       <form action ='' method = 'post'>
         <button class="btn btn-primary m-4" type="submit" name="playAgain">Play Again</button>
         <button class="btn btn-primary" type="submit" name="logout">Logout</button>

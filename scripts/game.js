@@ -1,13 +1,16 @@
 var count = 0;
 var guess = 0;
 var score = 0; // you get 1000 pts for each correct guess -200 for each wrong guess
+var wrongLetter = 0;
 
 function btnClicked(id) {
 
     //determine if button clicked is in word 
     for (let index = 0; index < 100; index++) {
         if(document.getElementById(id + index) != null) {
-            document.getElementById(id + index).value = id;
+            var letter =document.getElementById(id + index);
+            letter.innerHTML = id;
+            letter.style.textDecoration = "underline";
             count++;
             score += 1000;
         }
@@ -18,10 +21,19 @@ function btnClicked(id) {
     if(guess != count){
         button.style.borderColor = 'green';
         guess = count;
+        var x = document.getElementById("correct"); 
+        x.play();
+
     }
     else{
         button.style.borderColor = 'red';
         score -= 200;
+        if(wrongLetter != 12){
+            var x = document.getElementById("wrong"); 
+            x.play();
+        }
+        draw(wrongLetter++);
+      
     }    
     
     //update score 
@@ -30,10 +42,10 @@ function btnClicked(id) {
     var wordLength = parseInt(document.getElementById('wordLength').innerHTML);
 
     //game is over
-    if(count == wordLength){
+    if(wrongLetter == 12 || count == wordLength){
        //disable all buttons
        char ='a';
-       for (let index = 0; index < 25; index++) {
+       for (let index = 0; index < 26; index++) {
           var id = String.fromCharCode(char.charCodeAt(0) + index);
           var btn = document.getElementById(id);
           btn.disabled = true;
@@ -42,12 +54,20 @@ function btnClicked(id) {
         document.getElementById('highscore').value = score;
 
         document.getElementById('ln').value = wordLength;
-
-        //show play again button
-        var form = document.getElementById('form');
-        form.hidden = false;
-
-
+      
+        document.getElementById('tries').value = wrongLetter;
+        if(wrongLetter == 12){
+            var x = document.getElementById("over"); 
+            x.play();
+        }
+       
+        //wait then submit the form
+        setTimeout(showHighScores, 5000);
+        
+        
     }
     
 }  
+function showHighScores(){
+    document.getElementById('showScores').click();
+}
